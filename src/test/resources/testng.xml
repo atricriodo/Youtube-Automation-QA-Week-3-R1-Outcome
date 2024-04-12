@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="FlipkartSuite">
+    <test name="SanityTest">
+        <classes>
+            <class name="demo.TestCases"/>
+        </classes>
+    </test>
+</suite>
