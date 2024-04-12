@@ -1,12 +1,6 @@
 package demo.utils;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.openqa.selenium.support.ui.*;
 import org.openqa.selenium.*;
@@ -34,27 +28,31 @@ public class Utilities {
         }
     }
 
-    public static void clickTillUnclickable(WebDriver driver, By locator, Integer maxIterations){
+    public static void clickTillUnclickable(WebDriver driver, By locator, Integer maxIterations) throws InterruptedException{
         Integer numIter = 0;
         while(numIter<maxIterations){
-            findElementAndClick(driver, locator);
+            try{
+                findElementAndClick(driver, locator);
+            }
+            catch(TimeoutException e){
+                System.out.println("Stopping - "+e.getMessage());
+                break;
+            }
         }
     }
     
-    public static void findElementAndClick(WebDriver driver, By locator) {
+    public static void findElementAndClick(WebDriver driver, By locator) throws InterruptedException {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         
         // Wait for the element to be clickable
         WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-        
-        // Scroll to the element
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
         
         // Wait until element is visible after scrolling
         wait.until(ExpectedConditions.visibilityOf(element));
         
         // Click the element
         element.click();
+        Thread.sleep(1000);
     }
     public static void findElementAndClickWE(WebDriver driver, WebElement we, By locator) {
         WebElement element = we.findElement(locator);
@@ -66,30 +64,18 @@ public class Utilities {
         element.click();
     }
 
-    public static String findElementAndPrint(WebDriver driver, By locator){
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        
-        // Wait for the element to be visible
-        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-        
-        // Scroll to the element
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
+    public static String findElementAndPrint(WebDriver driver, By locator, int elementNo){
 
-        WebElement we = driver.findElement(locator);
+        WebElement we = driver.findElements(locator).get(elementNo);
         // Return the result
         String txt = we.getText();
         return txt;
     }
 
-    public static String findElementAndPrintWE(WebDriver driver, By locator, WebElement we){
-        WebElement element = we.findElement(locator);
-        // Scroll to the element
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", element);
-        
-        // Return the result
-        WebElement res = driver.findElement(locator);
+    public static String findElementAndPrintWE(WebDriver driver, By locator, WebElement we, int elementNo){
+        WebElement element = we.findElements(locator).get(elementNo);
 
-        String txt = res.getText();
+        String txt = element.getText();
         return txt;
     }
 
